@@ -8,7 +8,6 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
         ('push_notifications', '0002_auto_20160106_0850'),
@@ -20,11 +19,15 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('name', models.CharField(blank=True, max_length=255, null=True, verbose_name='Name')),
-                ('active', models.BooleanField(default=True, help_text='Inactive devices will not be sent notifications', verbose_name='Is active')),
+                ('active',
+                 models.BooleanField(default=True, help_text='Inactive devices will not be sent notifications',
+                                     verbose_name='Is active')),
                 ('date_created', models.DateTimeField(auto_now_add=True, null=True, verbose_name='Creation date')),
-                ('device_id', models.UUIDField(blank=True, db_index=True, help_text='GUID()', null=True, verbose_name='Device ID')),
+                ('device_id',
+                 models.UUIDField(blank=True, db_index=True, help_text='GUID()', null=True, verbose_name='Device ID')),
                 ('registration_id', models.TextField(verbose_name='Notification URI')),
-                ('user', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                ('user', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE,
+                                           to=settings.AUTH_USER_MODEL)),
             ],
             options={
                 'verbose_name': 'WNS device',

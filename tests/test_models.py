@@ -3,10 +3,10 @@ import mock
 from django.test import TestCase
 from django.utils import timezone
 from push_notifications.models import GCMDevice, APNSDevice
-from tests.mock_responses import ( GCM_PLAIN_RESPONSE,GCM_MULTIPLE_JSON_RESPONSE, GCM_PLAIN_RESPONSE_ERROR,
-                                   GCM_JSON_RESPONSE_ERROR, GCM_PLAIN_RESPONSE_ERROR_B, GCM_JSON_RESPONSE_ERROR_B,
-                                   GCM_PLAIN_CANONICAL_ID_RESPONSE, GCM_JSON_CANONICAL_ID_RESPONSE,
-                                   GCM_JSON_CANONICAL_ID_SAME_DEVICE_RESPONSE)
+from tests.mock_responses import (GCM_PLAIN_RESPONSE, GCM_MULTIPLE_JSON_RESPONSE, GCM_PLAIN_RESPONSE_ERROR,
+                                  GCM_JSON_RESPONSE_ERROR, GCM_PLAIN_RESPONSE_ERROR_B, GCM_JSON_RESPONSE_ERROR_B,
+                                  GCM_PLAIN_CANONICAL_ID_RESPONSE, GCM_JSON_CANONICAL_ID_RESPONSE,
+                                  GCM_JSON_CANONICAL_ID_SAME_DEVICE_RESPONSE)
 from push_notifications.gcm import GCMError, gcm_send_bulk_message
 
 
@@ -35,7 +35,7 @@ class ModelTestCase(TestCase):
             device.send_message("Hello world")
             p.assert_called_once_with(
                 b"data.message=Hello+world&registration_id=abc",
-                "application/x-www-form-urlencoded;charset=UTF-8",  key=None)
+                "application/x-www-form-urlencoded;charset=UTF-8", key=None)
 
     def test_gcm_send_message_extra(self):
         device = GCMDevice.objects.create(
@@ -45,7 +45,7 @@ class ModelTestCase(TestCase):
             device.send_message("Hello world", extra={"foo": "bar"})
             p.assert_called_once_with(
                 b"data.foo=bar&data.message=Hello+world&registration_id=abc",
-                "application/x-www-form-urlencoded;charset=UTF-8",  key=None)
+                "application/x-www-form-urlencoded;charset=UTF-8", key=None)
 
     def test_gcm_send_message_collapse_key(self):
         device = GCMDevice.objects.create(
@@ -55,7 +55,7 @@ class ModelTestCase(TestCase):
             device.send_message("Hello world", collapse_key="test_key")
             p.assert_called_once_with(
                 b"collapse_key=test_key&data.message=Hello+world&registration_id=abc",
-                "application/x-www-form-urlencoded;charset=UTF-8",  key=None)
+                "application/x-www-form-urlencoded;charset=UTF-8", key=None)
 
     def test_gcm_send_message_to_multiple_devices(self):
         GCMDevice.objects.create(
@@ -70,7 +70,7 @@ class ModelTestCase(TestCase):
             GCMDevice.objects.all().send_message("Hello world")
             p.assert_called_once_with(
                 json.dumps({
-                    "data": { "message": "Hello world" },
+                    "data": {"message": "Hello world"},
                     "registration_ids": ["abc", "abc1"]
                 }, separators=(",", ":"), sort_keys=True).encode("utf-8"), "application/json", key=None)
 
@@ -89,9 +89,9 @@ class ModelTestCase(TestCase):
             GCMDevice.objects.all().send_message("Hello world")
             p.assert_called_once_with(
                 json.dumps({
-                    "data": { "message": "Hello world" },
+                    "data": {"message": "Hello world"},
                     "registration_ids": ["abc"]
-                }, separators=(",", ":"), sort_keys=True).encode("utf-8"), "application/json",  key=None)
+                }, separators=(",", ":"), sort_keys=True).encode("utf-8"), "application/json", key=None)
 
     def test_gcm_send_message_extra_to_multiple_devices(self):
         GCMDevice.objects.create(
@@ -106,9 +106,9 @@ class ModelTestCase(TestCase):
             GCMDevice.objects.all().send_message("Hello world", extra={"foo": "bar"})
             p.assert_called_once_with(
                 json.dumps({
-                    "data": { "foo": "bar", "message": "Hello world" },
+                    "data": {"foo": "bar", "message": "Hello world"},
                     "registration_ids": ["abc", "abc1"]
-                }, separators=(",", ":"), sort_keys=True).encode("utf-8"), "application/json",  key=None)
+                }, separators=(",", ":"), sort_keys=True).encode("utf-8"), "application/json", key=None)
 
     def test_gcm_send_message_collapse_to_multiple_devices(self):
         GCMDevice.objects.create(
@@ -124,7 +124,7 @@ class ModelTestCase(TestCase):
             p.assert_called_once_with(
                 json.dumps({
                     "collapse_key": "test_key",
-                    "data": { "message": "Hello world" },
+                    "data": {"message": "Hello world"},
                     "registration_ids": ["abc", "abc1"]
                 }, separators=(",", ":"), sort_keys=True).encode("utf-8"), "application/json", key=None)
 
@@ -222,7 +222,8 @@ class ModelTestCase(TestCase):
         )
         socket = mock.MagicMock()
         with mock.patch("push_notifications.apns._apns_pack_frame") as p:
-            device.send_message("Hello world", extra={"foo": "bar"}, socket=socket, identifier=1, expiration=2, priority=5)
+            device.send_message("Hello world", extra={"foo": "bar"}, socket=socket, identifier=1, expiration=2,
+                                priority=5)
             p.assert_called_once_with("abc", b'{"aps":{"alert":"Hello world"},"foo":"bar"}', 1, 2, 5)
 
     def test_send_message_with_no_reg_ids(self):
